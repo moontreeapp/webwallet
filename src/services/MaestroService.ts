@@ -1,3 +1,4 @@
+import { useMaestroLockStore } from '../stores/useMaestroLockStore'
 import { useFrontSheetStore } from '@/stores/useFrontSheetStore'
 import { usePortfolioValueStore } from '@/stores/usePortfolioValueStore'
 import { useHoldingHeaderStore } from '@/stores/useHoldingHeaderStore'
@@ -30,348 +31,490 @@ import { useHelpStore } from '../stores/useHelpStore'
 
 export const MaestroService = {
   async goToSignIn() {
-    console.log('Navigating to Sign In')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('sign-in')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Sign In')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('sign-in')
+    } catch (error) {
+      console.error('Error in goToSignIn:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToWelcomeToMagic() {
-    console.log('Navigating to Welcome to Magic')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('welcome-to-magic')
-    const onboardingStore = useOnboardingStore()
-    onboardingStore.setDotActive(0)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Welcome to Magic')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('welcome-to-magic')
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.setDotActive(0)
+    } catch (error) {
+      console.error('Error in goToWelcomeToMagic:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToConnectYourPhone() {
-    console.log('Navigating to Safe Simple Secure')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('safe-simple-secure')
-    const onboardingStore = useOnboardingStore()
-    onboardingStore.toggleWelcomeToMagicOpacity()
-    onboardingStore.setWelcomeToMagicPosition('left')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    onboardingStore.toggleWelcomeToMagicShow()
-    onboardingStore.toggleConnectYourPhoneShow()
-    onboardingStore.toggleConnectYourPhoneOpacity()
-    onboardingStore.setConnectYourPhonePosition('center')
-    onboardingStore.setDotActive(1)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Safe Simple Secure')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('safe-simple-secure')
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.toggleWelcomeToMagicOpacity()
+      onboardingStore.setWelcomeToMagicPosition('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      onboardingStore.toggleWelcomeToMagicShow()
+      onboardingStore.toggleConnectYourPhoneShow()
+      onboardingStore.toggleConnectYourPhoneOpacity()
+      onboardingStore.setConnectYourPhonePosition('center')
+      onboardingStore.setDotActive(1)
+    } catch (error) {
+      console.error('Error in goToConnectYourPhone:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToInstallPhoneApp() {
-    console.log('Navigating to Install App')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('install-phone-app')
-    const onboardingStore = useOnboardingStore()
-    onboardingStore.toggleConnectYourPhoneOpacity()
-    onboardingStore.setConnectYourPhonePosition('left')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    onboardingStore.toggleConnectYourPhoneShow()
-    onboardingStore.toggleInstallPhoneAppShow()
-    onboardingStore.toggleInstallPhoneAppOpacity()
-    onboardingStore.setInstallPhoneAppPosition('center')
-    onboardingStore.setDotActive(2)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Install App')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('install-phone-app')
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.toggleConnectYourPhoneOpacity()
+      onboardingStore.setConnectYourPhonePosition('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      onboardingStore.toggleConnectYourPhoneShow()
+      onboardingStore.toggleInstallPhoneAppShow()
+      onboardingStore.toggleInstallPhoneAppOpacity()
+      onboardingStore.setInstallPhoneAppPosition('center')
+      onboardingStore.setDotActive(2)
+    } catch (error) {
+      console.error('Error in goToInstallPhoneApp:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToPairToPhone() {
-    console.log('Navigating to Pair Phone')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('pair-to-phone')
-    const onboardingStore = useOnboardingStore()
-    onboardingStore.toggleInstallPhoneAppOpacity()
-    onboardingStore.setInstallPhoneAppPosition('left')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    onboardingStore.toggleInstallPhoneAppShow()
-    onboardingStore.togglePairToPhoneShow()
-    onboardingStore.togglePairToPhoneOpacity()
-    onboardingStore.setPairToPhonePosition('center')
-    onboardingStore.setDotActive(3)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Pair Phone')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('pair-to-phone')
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.toggleInstallPhoneAppOpacity()
+      onboardingStore.setInstallPhoneAppPosition('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      onboardingStore.toggleInstallPhoneAppShow()
+      onboardingStore.togglePairToPhoneShow()
+      onboardingStore.togglePairToPhoneOpacity()
+      onboardingStore.setPairToPhonePosition('center')
+      onboardingStore.setDotActive(3)
+    } catch (error) {
+      console.error('Error in goToPairToPhone:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToHoldings() {
-    // Use helper function to navigate to holdings
-    const maestroPlaceStore = useMaestroPlaceStore()
-    goToHoldingsFrom(maestroPlaceStore.place)
-    // Set the maestro place state
-    maestroPlaceStore.changePlace('holdings')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      const maestroPlaceStore = useMaestroPlaceStore()
+      await goToHoldingsFrom(maestroPlaceStore.place)
+      maestroPlaceStore.changePlace('holdings')
+    } catch (error) {
+      console.error('Error in goToHoldings:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToHistory(holding?: Holding) {
-    console.log(`Navigating to ${history}`)
-    const holdingStore = useHoldingStore()
-    if (holding) {
-      holdingStore.setHolding(holding)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log(`Navigating to ${history}`)
+      const holdingStore = useHoldingStore()
+      if (holding) {
+        holdingStore.setHolding(holding)
+      }
+      const maestroPlaceStore = useMaestroPlaceStore()
+      await goToHistoryFrom(maestroPlaceStore.place)
+      maestroPlaceStore.changePlace('history')
+    } catch (error) {
+      console.error('Error in goToHistory:', error)
+    } finally {
+      maestroLockStore.unlock()
     }
-    const maestroPlaceStore = useMaestroPlaceStore()
-    goToHistoryFrom(maestroPlaceStore.place)
-    // Set the maestro place state
-    maestroPlaceStore.changePlace('history')
   },
 
   async goToTransaction() {
-    console.log('Navigating to Transaction')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('transaction')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
 
-    // Set the appbar title
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle('Transaction')
-    const historyListItemStore = useHistoryListItemStore()
-    historyListItemStore.toggleOpacity()
-    const holdingButtonsStore = useHoldingButtonsStore()
-    holdingButtonsStore.toggleOpacity()
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingButtonsStore.toggleShowComponent()
-    historyListItemStore.toggleShow()
-    const transactionHistoryStore = useTransactionHistoryStore()
-    transactionHistoryStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    transactionHistoryStore.toggleOpacity()
+    try {
+      console.log('Navigating to Transaction')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('transaction')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle('Transaction')
+      const historyListItemStore = useHistoryListItemStore()
+      historyListItemStore.toggleOpacity()
+      const holdingButtonsStore = useHoldingButtonsStore()
+      holdingButtonsStore.toggleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingButtonsStore.toggleShowComponent()
+      historyListItemStore.toggleShow()
+      const transactionHistoryStore = useTransactionHistoryStore()
+      transactionHistoryStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      transactionHistoryStore.toggleOpacity()
+    } catch (error) {
+      console.error('Error in goToTransaction:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToSendPreview() {
-    console.log('Navigating to Send Preview')
-    // Use helper function to navigate to send preview
-    const maestroPlaceStore = useMaestroPlaceStore()
-    goToSendPreviewFrom(maestroPlaceStore.place)
-    // Set the maestro place state
-    maestroPlaceStore.changePlace('send-preview')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Send Preview')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      await goToSendPreviewFrom(maestroPlaceStore.place)
+      maestroPlaceStore.changePlace('send-preview')
+    } catch (error) {
+      console.error('Error in goToSendPreview:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToSendQr() {
-    console.log('Navigating to Send QR')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('send-qr')
-    const holdingHeaderStore = useHoldingHeaderStore()
-    holdingHeaderStore.toggleTitleOpacity()
-    const sendPreviewFormStore = useSendPreviewFormStore()
-    sendPreviewFormStore.toggleOpacity()
-    // Wait for fade animation
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingHeaderStore.setTitle('Send')
-    holdingHeaderStore.setTitleTrailing('')
-    holdingHeaderStore.setSubTitle('Scan to Approve')
-    holdingHeaderStore.setSubTitleIcon('mdi-cellphone-key')
-    holdingHeaderStore.setShowSubTitle(true)
-    sendPreviewFormStore.toggleShow()
-    const sendQrStore = useSendQrStore()
-    sendQrStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    sendQrStore.toggleOpacity()
-    holdingHeaderStore.toggleTitleOpacity()
-    holdingHeaderStore.toggleSubTitleOpacity()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Send QR')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('send-qr')
+      const holdingHeaderStore = useHoldingHeaderStore()
+      holdingHeaderStore.toggleTitleOpacity()
+      const sendPreviewFormStore = useSendPreviewFormStore()
+      sendPreviewFormStore.toggleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingHeaderStore.setTitle('Send')
+      holdingHeaderStore.setTitleTrailing('')
+      holdingHeaderStore.setSubTitle('Scan to Approve')
+      holdingHeaderStore.setSubTitleIcon('mdi-cellphone-key')
+      holdingHeaderStore.setShowSubTitle(true)
+      sendPreviewFormStore.toggleShow()
+      const sendQrStore = useSendQrStore()
+      sendQrStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      sendQrStore.toggleOpacity()
+      holdingHeaderStore.toggleTitleOpacity()
+      holdingHeaderStore.toggleSubTitleOpacity()
+    } catch (error) {
+      console.error('Error in goToSendQr:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToQrCodeScanner() {
-    console.log('Navigating to QR Code Scanner')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('qr-code-scanner')
-    // Set the appbar title
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle('Scan')
-    // hide the send preview form
-    const sendPreviewFormStore = useSendPreviewFormStore()
-    sendPreviewFormStore.toggleOpacity()
-    // update holder heading title
-    const holdingHeaderStore = useHoldingHeaderStore()
-    const holdingStore = useHoldingStore()
-    holdingHeaderStore.toggleTitleOpacity()
-    holdingHeaderStore.toggleSubTitleOpacity()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
 
-    // Wait for fade animation
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingHeaderStore.setTitle('Send To')
-    holdingHeaderStore.setTitleTrailing('')
-    holdingHeaderStore.setSubTitle(holdingStore.holding.blockchain.name)
-    holdingHeaderStore.toggleTitleOpacity()
-    holdingHeaderStore.toggleSubTitleOpacity()
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    sendPreviewFormStore.toggleShow()
-    const qRcodeScannerStore = useQrCodeScannerStore()
-    qRcodeScannerStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    qRcodeScannerStore.toggleOpacity()
+    try {
+      console.log('Navigating to QR Code Scanner')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('qr-code-scanner')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle('Scan')
+      const sendPreviewFormStore = useSendPreviewFormStore()
+      sendPreviewFormStore.toggleOpacity()
+      const holdingHeaderStore = useHoldingHeaderStore()
+      const holdingStore = useHoldingStore()
+      holdingHeaderStore.toggleTitleOpacity()
+      holdingHeaderStore.toggleSubTitleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingHeaderStore.setTitle('Send To')
+      holdingHeaderStore.setTitleTrailing('')
+      holdingHeaderStore.setSubTitle(holdingStore.holding.blockchain.name)
+      holdingHeaderStore.toggleTitleOpacity()
+      holdingHeaderStore.toggleSubTitleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      sendPreviewFormStore.toggleShow()
+      const qRcodeScannerStore = useQrCodeScannerStore()
+      qRcodeScannerStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      qRcodeScannerStore.toggleOpacity()
+    } catch (error) {
+      console.error('Error in goToQrCodeScanner:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToReceive() {
-    console.log('Navigating to Receive')
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('receive')
-    // Set the appbar title
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle(`Receive`)
-    // Set the holding amount buttons visibility
-    const holdingButtonsStore = useHoldingButtonsStore()
-    holdingButtonsStore.toggleOpacity()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
 
-    // Set the History List Item visibility
-    const historyListItemStore = useHistoryListItemStore()
-    historyListItemStore.toggleOpacity()
-    const holdingHeaderStore = useHoldingHeaderStore()
-    const holdingStore = useHoldingStore()
-    holdingHeaderStore.setShowSubTitle(true)
-    holdingHeaderStore.toggleTitleOpacity()
-
-    // Wait for fade animation
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingHeaderStore.setTitle('Send To Me')
-    holdingHeaderStore.setTitleTrailing('')
-    holdingHeaderStore.setSubTitle(holdingStore.holding.name)
-    // Set the history list item visibility
-    historyListItemStore.toggleShow()
-    holdingButtonsStore.toggleShowComponent()
-    // Set the receive visibility
-    const receiveStore = useReceiveStore()
-    receiveStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    holdingHeaderStore.toggleTitleOpacity()
-    holdingHeaderStore.toggleSubTitleOpacity()
-    // Set the receive opacity
-    receiveStore.toggleOpacity()
+    try {
+      console.log('Navigating to Receive')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('receive')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle(`Receive`)
+      const holdingButtonsStore = useHoldingButtonsStore()
+      holdingButtonsStore.toggleOpacity()
+      const historyListItemStore = useHistoryListItemStore()
+      historyListItemStore.toggleOpacity()
+      const holdingHeaderStore = useHoldingHeaderStore()
+      const holdingStore = useHoldingStore()
+      holdingHeaderStore.setShowSubTitle(true)
+      holdingHeaderStore.toggleTitleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingHeaderStore.setTitle('Send To Me')
+      holdingHeaderStore.setTitleTrailing('')
+      holdingHeaderStore.setSubTitle(holdingStore.holding.name)
+      historyListItemStore.toggleShow()
+      holdingButtonsStore.toggleShowComponent()
+      const receiveStore = useReceiveStore()
+      receiveStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      holdingHeaderStore.toggleTitleOpacity()
+      holdingHeaderStore.toggleSubTitleOpacity()
+      receiveStore.toggleOpacity()
+    } catch (error) {
+      console.error('Error in goToReceive:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToHelp() {
-    console.log('Navigating to Help')
-    const maestroPlaceStore = useMaestroPlaceStore()
-    const portfolioValueStore = usePortfolioValueStore()
-    const menuItemStore = useMenuItemStore('help')()
-    const appBarTitleStore = useAppBarTitleStore()
-    const helpStore = useHelpStore()
-    const appBarButtonStore = useAppBarButtonStore()
-    const backsheetTopContainerStore = useBacksheetTopContainerStore()
-    maestroPlaceStore.changePlace('help')
-    togglePivotOtherMenuItems('help')
-    portfolioValueStore.setAlignment('left')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    menuItemStore.togglePivot()
-    appBarButtonStore.changeIcon('left-chevron')
-    appBarTitleStore.setTitle('Help')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    toggleShowOtherMenuItems('help')
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    helpStore.toggleShow()
-    backsheetTopContainerStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    helpStore.toggleOpacity()
-    helpStore.setPosition('center')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Help')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      const portfolioValueStore = usePortfolioValueStore()
+      const menuItemStore = useMenuItemStore('help')()
+      const appBarTitleStore = useAppBarTitleStore()
+      const helpStore = useHelpStore()
+      const appBarButtonStore = useAppBarButtonStore()
+      const backsheetTopContainerStore = useBacksheetTopContainerStore()
+      maestroPlaceStore.changePlace('help')
+      await togglePivotOtherMenuItems('help')
+      portfolioValueStore.setAlignment('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      menuItemStore.togglePivot()
+      appBarButtonStore.changeIcon('left-chevron')
+      appBarTitleStore.setTitle('Help')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      await toggleShowOtherMenuItems('help')
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      helpStore.toggleShow()
+      backsheetTopContainerStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      helpStore.toggleOpacity()
+      helpStore.setPosition('center')
+    } catch (error) {
+      console.error('Error in goToHelp:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToSettings() {
-    console.log('Navigating to Settings')
-    // Toggle the menu items
-    togglePivotOtherMenuItems('settings')
-    // Set the portfolio value alignment
-    const portfolioValueStore = usePortfolioValueStore()
-    portfolioValueStore.setAlignment('left')
-    // Wait for slide animation
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    // Pivot the clicked item
-    const menuItemStore = useMenuItemStore('settings')()
-    menuItemStore.togglePivot()
-    // Set the maestro place state
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('settings')
-    // Set the appbar button icon
-    const appBarButtonStore = useAppBarButtonStore()
-    appBarButtonStore.changeIcon('left-chevron')
-    // Set the appbar title
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle('Settings')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    toggleShowOtherMenuItems('settings')
-    toggleShowSettingItems()
-    togglePositionSettingItems()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Settings')
+      await togglePivotOtherMenuItems('settings')
+      const portfolioValueStore = usePortfolioValueStore()
+      portfolioValueStore.setAlignment('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      const menuItemStore = useMenuItemStore('settings')()
+      menuItemStore.togglePivot()
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('settings')
+      const appBarButtonStore = useAppBarButtonStore()
+      appBarButtonStore.changeIcon('left-chevron')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle('Settings')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      await toggleShowOtherMenuItems('settings')
+      await toggleShowSettingItems()
+      await togglePositionSettingItems()
+    } catch (error) {
+      console.error('Error in goToSettings:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToAbout() {
-    console.log('Navigating to About')
-    const maestroPlaceStore = useMaestroPlaceStore()
-    const portfolioValueStore = usePortfolioValueStore()
-    const menuItemStore = useMenuItemStore('about')()
-    const appBarTitleStore = useAppBarTitleStore()
-    const aboutStore = useAboutStore()
-    const appBarButtonStore = useAppBarButtonStore()
-    const backsheetTopContainerStore = useBacksheetTopContainerStore()
-    maestroPlaceStore.changePlace('about')
-    togglePivotOtherMenuItems('about')
-    portfolioValueStore.setAlignment('left')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    menuItemStore.togglePivot()
-    appBarButtonStore.changeIcon('left-chevron')
-    appBarTitleStore.setTitle('About')
-    await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    toggleShowOtherMenuItems('about')
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    aboutStore.toggleShow()
-    backsheetTopContainerStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    aboutStore.toggleOpacity()
-    aboutStore.setPosition('center')
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to About')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      const portfolioValueStore = usePortfolioValueStore()
+      const menuItemStore = useMenuItemStore('about')()
+      const appBarTitleStore = useAppBarTitleStore()
+      const aboutStore = useAboutStore()
+      const appBarButtonStore = useAppBarButtonStore()
+      const backsheetTopContainerStore = useBacksheetTopContainerStore()
+      maestroPlaceStore.changePlace('about')
+      await togglePivotOtherMenuItems('about')
+      portfolioValueStore.setAlignment('left')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      menuItemStore.togglePivot()
+      appBarButtonStore.changeIcon('left-chevron')
+      appBarTitleStore.setTitle('About')
+      await new Promise((resolve) => setTimeout(resolve, slideDuration))
+      await toggleShowOtherMenuItems('about')
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      aboutStore.toggleShow()
+      backsheetTopContainerStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      aboutStore.toggleOpacity()
+      aboutStore.setPosition('center')
+    } catch (error) {
+      console.error('Error in goToAbout:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToMenu() {
-    console.log('Navigating to Menu')
-    const maestroPlaceStore = useMaestroPlaceStore()
-    await goToMenuFrom(maestroPlaceStore.place)
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Menu')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      await goToMenuFrom(maestroPlaceStore.place)
+    } catch (error) {
+      console.error('Error in goToMenu:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToSwap() {
-    console.log('Navigating to Swap')
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('swap')
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle('Swap')
-    const holdingButtonsStore = useHoldingButtonsStore()
-    holdingButtonsStore.toggleOpacity()
-    const historyListItemStore = useHistoryListItemStore()
-    historyListItemStore.toggleOpacity()
-    const holdingHeaderStore = useHoldingHeaderStore()
-    holdingHeaderStore.toggleTitleOpacity()
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingButtonsStore.toggleShowComponent()
-    historyListItemStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    const swapStore = useSwapStore()
-    swapStore.toggleShow()
-    holdingHeaderStore.setTitle('Coming Soon')
-    holdingHeaderStore.setTitleTrailing('')
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    holdingHeaderStore.toggleTitleOpacity()
-    swapStore.toggleOpacity()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Swap')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('swap')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle('Swap')
+      const holdingButtonsStore = useHoldingButtonsStore()
+      holdingButtonsStore.toggleOpacity()
+      const historyListItemStore = useHistoryListItemStore()
+      historyListItemStore.toggleOpacity()
+      const holdingHeaderStore = useHoldingHeaderStore()
+      holdingHeaderStore.toggleTitleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingButtonsStore.toggleShowComponent()
+      historyListItemStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      const swapStore = useSwapStore()
+      swapStore.toggleShow()
+      holdingHeaderStore.setTitle('Coming Soon')
+      holdingHeaderStore.setTitleTrailing('')
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      holdingHeaderStore.toggleTitleOpacity()
+      swapStore.toggleOpacity()
+    } catch (error) {
+      console.error('Error in goToSwap:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   },
 
   async goToMint() {
-    console.log('Navigating to Mint')
-    const maestroPlaceStore = useMaestroPlaceStore()
-    maestroPlaceStore.changePlace('mint')
-    const appBarTitleStore = useAppBarTitleStore()
-    appBarTitleStore.setTitle('Mint')
-    const holdingButtonsStore = useHoldingButtonsStore()
-    holdingButtonsStore.toggleOpacity()
-    const historyListItemStore = useHistoryListItemStore()
-    historyListItemStore.toggleOpacity()
-    const holdingHeaderStore = useHoldingHeaderStore()
-    holdingHeaderStore.toggleTitleOpacity()
-    await new Promise((resolve) => setTimeout(resolve, fadeDuration))
-    holdingButtonsStore.toggleShowComponent()
-    historyListItemStore.toggleShow()
-    holdingHeaderStore.setTitle('Coming Soon')
-    holdingHeaderStore.setTitleTrailing('')
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    const mintStore = useMintStore()
-    mintStore.toggleShow()
-    await new Promise((resolve) => setTimeout(resolve, offsetDuration))
-    holdingHeaderStore.toggleTitleOpacity()
-    mintStore.toggleOpacity()
+    const maestroLockStore = useMaestroLockStore()
+    if (maestroLockStore.isLocked) return
+    maestroLockStore.lock()
+
+    try {
+      console.log('Navigating to Mint')
+      const maestroPlaceStore = useMaestroPlaceStore()
+      maestroPlaceStore.changePlace('mint')
+      const appBarTitleStore = useAppBarTitleStore()
+      appBarTitleStore.setTitle('Mint')
+      const holdingButtonsStore = useHoldingButtonsStore()
+      holdingButtonsStore.toggleOpacity()
+      const historyListItemStore = useHistoryListItemStore()
+      historyListItemStore.toggleOpacity()
+      const holdingHeaderStore = useHoldingHeaderStore()
+      holdingHeaderStore.toggleTitleOpacity()
+      await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+      holdingButtonsStore.toggleShowComponent()
+      historyListItemStore.toggleShow()
+      holdingHeaderStore.setTitle('Coming Soon')
+      holdingHeaderStore.setTitleTrailing('')
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      const mintStore = useMintStore()
+      mintStore.toggleShow()
+      await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+      holdingHeaderStore.toggleTitleOpacity()
+      mintStore.toggleOpacity()
+    } catch (error) {
+      console.error('Error in goToMint:', error)
+    } finally {
+      maestroLockStore.unlock()
+    }
   }
 }
 
@@ -560,9 +703,9 @@ async function goToMenuFrom(place: Place) {
     appBarButtonStore.changeIcon('menu')
     const appBarTitleStore = useAppBarTitleStore()
     appBarTitleStore.setTitle('Magic')
-    toggleShowOtherMenuItems(place)
+    await toggleShowOtherMenuItems(place)
     await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    togglePivotOtherMenuItems(place)
+    await togglePivotOtherMenuItems(place)
     const portfolioValueStore = usePortfolioValueStore()
     portfolioValueStore.setAlignment('center')
   } else if (place === 'help') {
@@ -581,19 +724,19 @@ async function goToMenuFrom(place: Place) {
     appBarButtonStore.changeIcon('menu')
     const appBarTitleStore = useAppBarTitleStore()
     appBarTitleStore.setTitle('Magic')
-    toggleShowOtherMenuItems(place)
+    await toggleShowOtherMenuItems(place)
     await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    togglePivotOtherMenuItems(place)
+    await togglePivotOtherMenuItems(place)
     const portfolioValueStore = usePortfolioValueStore()
     portfolioValueStore.setAlignment('center')
   } else if (place === 'settings') {
     const maestroPlaceStore = useMaestroPlaceStore()
     maestroPlaceStore.changePlace('menu')
-    togglePositionSettingItems()
+    await togglePositionSettingItems()
     await new Promise((resolve) => setTimeout(resolve, slideDuration))
     await nextTick()
-    toggleShowSettingItems()
-    toggleShowOtherMenuItems(place)
+    await toggleShowSettingItems()
+    await toggleShowOtherMenuItems(place)
     await new Promise((resolve) => setTimeout(resolve, offsetDuration))
     const menuItemStore = useMenuItemStore(place)()
     menuItemStore.togglePivot()
@@ -602,7 +745,7 @@ async function goToMenuFrom(place: Place) {
     const appBarTitleStore = useAppBarTitleStore()
     appBarTitleStore.setTitle('Magic')
     await new Promise((resolve) => setTimeout(resolve, slideDuration))
-    togglePivotOtherMenuItems(place)
+    await togglePivotOtherMenuItems(place)
     const portfolioValueStore = usePortfolioValueStore()
     portfolioValueStore.setAlignment('center')
   }
