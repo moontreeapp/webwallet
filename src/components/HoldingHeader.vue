@@ -182,7 +182,7 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 .content-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 108px;
   transition: transform var(--slide-duration) ease-in-out;
@@ -197,6 +197,10 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 .center-content-no-subtitle {
   transform: translateY(17%);
   transition: transform var(--slide-duration) ease-in-out;
+}
+
+.center-content:not(.center-content-no-subtitle) {
+  transform: translateY(10%);
 }
 
 .slide-center {
@@ -244,7 +248,7 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
   flex-direction: column;
   justify-content: center;
   height: 64px;
-  transition: height var(--slide-duration) ease-in-out;
+  position: relative;
 }
 
 .title-container {
@@ -258,16 +262,16 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 }
 
 .subtitle-container {
-  max-height: 32px;
-  overflow: hidden;
-  transition:
-    max-height var(--slide-duration) ease-in-out,
-    opacity var(--fade-duration) ease-in-out;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  transition: opacity var(--fade-duration) ease-in-out;
 }
 
 .subtitle-container.subtitle-hidden {
-  max-height: 0;
   opacity: 0;
+  pointer-events: none;
 }
 
 .title {
