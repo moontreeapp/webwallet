@@ -109,13 +109,13 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
         <div class="inner-container">
           <div
             :class="[
+              'content-wrapper',
               showButtons,
               {
                 'center-content': showButtons,
                 'center-content-no-subtitle': showButtons && !showSubTitle
               }
             ]"
-            class="content-wrapper"
           >
             <div class="image-container" :style="{ backgroundColor: holdingIcon ? '' : iconColor }">
               <img v-if="holdingIcon" :src="holdingIcon" alt="Icon" class="logo" />
@@ -123,22 +123,24 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
             </div>
 
             <div class="content">
-              <div :class="isTitleFaded">
+              <div class="title-container" :class="isTitleFaded">
                 <div class="title" :class="{ clickable: isTitleClickable }" @click="toggleTitle">
                   {{ toggledTitle }}<span class="title-trailing">{{ toggledTitleTrailing }}</span>
                 </div>
               </div>
-              <div v-show="showSubTitle" :class="isSubTitleFaded">
-                <div class="sub-title">
-                  <v-icon
-                    v-show="subTitleIcon"
-                    :icon="subTitleIcon"
-                    size="16"
-                    class="sub-title-icon"
-                  ></v-icon>
-                  <span class="sub-title-text">
-                    {{ subTitleType === 'value' ? `$${subTitle}` : subTitle }}
-                  </span>
+              <div class="subtitle-container" :class="{ 'subtitle-hidden': !showSubTitle }">
+                <div :class="isSubTitleFaded">
+                  <div class="sub-title">
+                    <v-icon
+                      v-show="subTitleIcon"
+                      :icon="subTitleIcon"
+                      size="16"
+                      class="sub-title-icon"
+                    ></v-icon>
+                    <span class="sub-title-text">
+                      {{ subTitleType === 'value' ? `$${subTitle}` : subTitle }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -238,6 +240,34 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 
 .content {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 64px;
+  transition: height var(--slide-duration) ease-in-out;
+}
+
+.title-container {
+  transition:
+    transform var(--slide-duration) ease-in-out,
+    opacity var(--fade-duration) ease-in-out;
+}
+
+.title-container.faded-opacity-0 {
+  opacity: 0;
+}
+
+.subtitle-container {
+  max-height: 32px;
+  overflow: hidden;
+  transition:
+    max-height var(--slide-duration) ease-in-out,
+    opacity var(--fade-duration) ease-in-out;
+}
+
+.subtitle-container.subtitle-hidden {
+  max-height: 0;
+  opacity: 0;
 }
 
 .title {
@@ -246,6 +276,7 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
   color: white;
   line-height: 24px;
   margin-bottom: 16px;
+  transition: opacity var(--fade-duration) ease-in-out;
 }
 
 .title.clickable {

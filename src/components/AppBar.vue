@@ -76,7 +76,15 @@ export default defineComponent({
         </transition>
       </v-btn>
       <transition name="title-fade" mode="out-in">
-        <span :key="currentTitle" :class="['title', currentTitle]">{{ currentTitle }}</span>
+        <div :key="currentTitle">
+          <img
+            v-if="currentTitle === 'Magic'"
+            src="@/assets/magic_logos/text_logo_white.svg"
+            alt="Magic"
+            class="magic-logo"
+          />
+          <span v-else :class="['title', currentTitle]">{{ currentTitle }}</span>
+        </div>
       </transition>
     </div>
     <!-- Future expand button for full screen version -->
@@ -135,5 +143,11 @@ export default defineComponent({
 .title-fade-enter,
 .title-fade-leave-to {
   opacity: 0;
+}
+
+.magic-logo {
+  height: 24px;
+  margin-left: 0.2rem;
+  margin-top: 0.825rem;
 }
 </style>

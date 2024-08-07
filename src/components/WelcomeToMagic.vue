@@ -57,8 +57,10 @@ export default defineComponent({
   <div :class="position">
     <v-sheet :class="isWelcomeToMagicFaded" v-show="showWelcomeToMagicComponent">
       <div class="message-container">
-        <div class="title">Magic</div>
-        <div class="message">Welcome To Magic</div>
+        <div class="title">
+          <img src="@/assets/magic_logos/text_logo_white.svg" alt="Magic" class="magic-logo" />
+        </div>
+        <div class="message">Welcome to Magic</div>
       </div>
     </v-sheet>
   </div>
@@ -75,12 +77,17 @@ export default defineComponent({
   font-size: 2rem;
   font-weight: 400;
   color: white;
-  margin-bottom: 12px;
+  /* margin-bottom: 12px; */
 }
 
 .message {
   font-size: 24px;
   color: rgba(255, 255, 255, 0.6);
+}
+
+.magic-logo {
+  width: 120px;
+  height: auto;
 }
 
 .slide-left {
