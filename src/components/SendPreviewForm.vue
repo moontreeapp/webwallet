@@ -39,6 +39,7 @@ export default defineComponent({
       set: (value) => sendPreviewFormStore.setTo(value)
     })
     const amount = ref('')
+    const formattedAmount = ref('')
     const unitIsUsd = ref(false)
     const valid = computed(() => sendPreviewFormStore.valid)
     const isFaded = computed(() => {
@@ -84,6 +85,21 @@ export default defineComponent({
         console.error('Form validation failed')
       }
     }
+
+    const formatAmount = (value: string) => {
+      const cleanValue = value.replace(/[^\d.]/g, '')
+      const [integerPart, decimalPart] = cleanValue.split('.')
+      const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger
+    }
+
+    watch(
+      () => amount.value,
+      (value) => {
+        formattedAmount.value = formatAmount(value)
+        validateAmountField(value)
+      }
+    )
 
     watch(
       () => unitIsUsd.value,
@@ -140,13 +156,6 @@ export default defineComponent({
     }
 
     watch(
-      () => amount.value,
-      (value) => {
-        validateAmountField(value)
-      }
-    )
-
-    watch(
       () => to.value,
       async (value) => {
         await validateToField(value)
@@ -171,6 +180,7 @@ export default defineComponent({
       valid,
       to,
       amount,
+      formattedAmount,
       handleToIconClick,
       handleAmountIconClick,
       handleFormSubmit,
@@ -219,7 +229,8 @@ export default defineComponent({
           flat
           label="Amount"
           type="amount"
-          v-model="amount"
+          v-model="formattedAmount"
+          @input="amount = $event.target.value.replace(/,/g, '')"
           :error-messages="amountErrors"
           :clearable="true"
           variant="solo"

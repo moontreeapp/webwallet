@@ -5,6 +5,8 @@ import { HoldingsListService } from '../services/HoldingsListService'
 import { usePortfolioValueStore } from './usePortfolioValueStore'
 import { plainToInstance } from 'class-transformer'
 import { HoldingData } from '../models/HoldingData'
+import { WALLET } from '../models/Wallet'
+import type { Blockchain } from '../models/Blockchain'
 
 const holdingsListService = new HoldingsListService()
 
@@ -13,10 +15,12 @@ export const useHoldingsListStore = defineStore('holdingsList', {
     isFaded: boolean
     showComponent: boolean
     holdings: Holding[]
+    pastInitialization: boolean
   } => ({
     isFaded: true,
     showComponent: false,
-    holdings: []
+    holdings: [],
+    pastInitialization: false
   }),
   actions: {
     toggleOpacity() {
@@ -24,55 +28,52 @@ export const useHoldingsListStore = defineStore('holdingsList', {
     },
     toggleShow() {
       this.showComponent = !this.showComponent
+      // Fetch holdings if component is shown and not already fetched
+      if (this.showComponent && this.pastInitialization) {
+        console.log('Fetching holdings...')
+        this.fetchHoldings()
+      }
+      // Set pastInitialization to true. This will only be true after first fetch.
+      this.pastInitialization = true
     },
     reset() {
       this.$reset()
     },
+
     initializeWebSocket() {
       const webSocketStore = useWebSocketStore()
       webSocketStore.initializeWebSocket()
       this.setupHoldingsListener()
     },
+
     fetchHoldings() {
       console.log('Fetching holdings...')
       const webSocketStore = useWebSocketStore()
-      const holdingsRequest = {
-        endpoint: 'balances.get',
-        params: {
-          chainName: 'evrmore_mainnet',
-          xpubkeys: [
-            'xpub6EtVexS6kuhFVjQNB1qGSUGumEnQVF3xp3926wy92W4GJS7ymvhbWkVzBTjXQ4u8EixkRXmE8N538zei6kCdAyZkWKcZBZ7BSdYm9uNPn9i',
-            'xpub6EtVexS6kuhFZ22PBCWPC97VNkZ9vufPdrTp2ZDDApasumxt8f8CREs4Zv6nDdFKByp8BPZ5tFFj6ZG4eeerNkDM7mJ2PZfBDeB5LjdRiXY'
-          ]
+
+      for (const holdingChain of WALLET) {
+        const holdingsRequest = {
+          endpoint: 'balances.get',
+          params: holdingChain
         }
+        webSocketStore.send(JSON.stringify(holdingsRequest))
       }
-      webSocketStore.send(JSON.stringify(holdingsRequest))
     },
+
     setupHoldingsListener() {
       const webSocketStore = useWebSocketStore()
       webSocketStore.on('message', this.handleMessage as EventListener)
     },
+
     removeHoldingsListener() {
       const webSocketStore = useWebSocketStore()
       webSocketStore.off('message', this.handleMessage as EventListener)
     },
+
     handleMessage(event: Event) {
       if (event instanceof MessageEvent) {
         console.log('Raw message received:', event.data)
         try {
           const parsedData = JSON.parse(event.data)
-          // console.log('Parsed data:', parsedData)
-          // const parsedData: HoldingData[] = [
-          //   {
-          //     id: null,
-          //     error: null,
-          //     satsConfirmed: 99588600,
-          //     satsUnconfirmed: 0,
-          //     symbol: 'EVR',
-          //     chain: 'evrmore_mainnet'
-          //   }
-          // ]
-
           if (Array.isArray(parsedData)) {
             const holdingsData: HoldingData[] = plainToInstance(HoldingData, parsedData)
             console.log('Transformed holdings data:', holdingsData)
@@ -86,10 +87,17 @@ export const useHoldingsListStore = defineStore('holdingsList', {
         }
       }
     },
-    processAndUpdateHoldings(holdingsData: HoldingData[]) {
+
+    async processAndUpdateHoldings(holdingsData: HoldingData[]) {
       console.log('Processing holdings:', holdingsData)
-      const processedHoldings = holdingsListService.processHoldings(holdingsData)
-      this.holdings = processedHoldings
+      const processedHoldings: Holding[] = await holdingsListService.processHoldings(holdingsData)
+      // get the blockchain that was updated from the first holding.
+      // we can assume that all holdings are for the same blockchain.
+      const blockchain: Blockchain = processedHoldings[0].blockchain
+      // remove all existing holdings for the blockchain from the store
+      this.holdings = this.holdings.filter((holding) => holding.blockchain.name !== blockchain.name)
+      // add the new holdings to the store
+      this.holdings.push(...processedHoldings)
       console.log('Holdings updated:', this.holdings)
 
       // Update portfolio value

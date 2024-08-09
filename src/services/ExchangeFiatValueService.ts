@@ -1,14 +1,22 @@
-export class ExchangeFiatValueService {
-  static getFiatValue(symbol: string): string {
-    // Simulate network delay
-    // In a real scenario, you'd use async/await here
+import type { Blockchain } from '../models/Blockchain'
+import { ExchangeFiatValueRepo } from '../repos/ExchangeFiatValueRepo'
 
-    // 30% chance of returning 0
-    if (Math.random() < 0.3) {
+export class ExchangeFiatValueService {
+  private static validTickers = ['EVR', 'RVN'] // Add more tickers as needed
+
+  static async getFiatValue(ticker: string, amount: number): Promise<string> {
+    // Return '0' if the ticker is not valid
+    if (!this.validTickers.includes(ticker.toUpperCase())) {
       return '0'
     }
 
-    // 70% chance of returning a random value between 0.01 and 1000
-    return Number((Math.random() * 1000 + 0.01).toFixed(2)).toString()
+    try {
+      const price = await ExchangeFiatValueRepo.getFiatValue(ticker)
+      const fiatValue = price * amount
+      return fiatValue.toFixed(2)
+    } catch (error) {
+      console.error('Error getting fiat value:', error)
+      return '0'
+    }
   }
 }

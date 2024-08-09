@@ -1,18 +1,19 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted, onUnmounted, computed } from 'vue'
-import HistoryListItem from '@/components/HistoryListItem.vue'
 import { useFrontSheetStore, type SheetState } from '@/stores/useFrontSheetStore'
-import SendPreviewForm from '@/components/SendPreviewForm.vue'
-import Receive from '@/components/Receive.vue'
 import { fadeDuration, slideDuration } from '@/utils/animationUtils'
-import TransactionHistory from './TransactionHistory.vue'
-import QrCodeScanner from '@/components/QrCodeScanner.vue'
+import Onboarding from '@/components/Onboarding.vue'
+import SignInForm from '@/components/SignInForm.vue'
 import HoldingsList from '@/components/HoldingsList.vue'
-import SendQr from './SendQr.vue'
-import Onboarding from './Onboarding.vue'
-import SignInForm from './SignInForm.vue'
-import Swap from './Swap.vue'
-import Mint from './Mint.vue'
+// Lazy load all components
+const HistoryListItem = () => import('@/components/HistoryListItem.vue')
+const SendPreviewForm = () => import('@/components/SendPreviewForm.vue')
+const Receive = () => import('@/components/Receive.vue')
+const TransactionHistory = () => import('./TransactionHistory.vue')
+const QrCodeScanner = () => import('@/components/QrCodeScanner.vue')
+const SendQr = () => import('./SendQr.vue')
+const Swap = () => import('./Swap.vue')
+const Mint = () => import('./Mint.vue')
 
 export default defineComponent({
   name: 'FrontSheet',
@@ -23,7 +24,6 @@ export default defineComponent({
     SendPreviewForm,
     Swap,
     Mint,
-    // SendForm,
     SendQr,
     HoldingsList,
     Receive,

@@ -1,18 +1,28 @@
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, computed, watch } from 'vue'
-import { fadeDuration, slideDuration } from '@/utils/animationUtils'
+import { defineComponent, onMounted, onUnmounted, computed, watch, ref } from 'vue'
+import {
+  fadeDuration,
+  offsetDuration,
+  slideDuration,
+  snackbarDuration
+} from '@/utils/animationUtils'
 import { useHoldingsListStore } from '@/stores/useHoldingsListStore'
 import type { Holding } from '../models/Holding'
 import { MaestroService } from '../services/MaestroService'
 import { useWebSocketStore } from '@/stores/useWebSocketStore'
+import { useSnackbarStore } from '@/stores/useSnackbarStore'
 
 export default defineComponent({
   name: 'HoldingsList',
   setup() {
     const holdingsListStore = useHoldingsListStore()
     const webSocketStore = useWebSocketStore()
+    const snackbarStore = useSnackbarStore()
+
+    const highlightedHolding = ref<string | null>(null)
 
     const fetchHoldingsIfConnected = () => {
+      // Fetch holdings if connected on initialization
       if (webSocketStore.connected) {
         holdingsListStore.fetchHoldings()
       }
@@ -22,6 +32,8 @@ export default defineComponent({
       // Set the CSS variables
       document.documentElement.style.setProperty('--slide-duration', `${slideDuration}ms`)
       document.documentElement.style.setProperty('--fade-duration', `${fadeDuration}ms`)
+      document.documentElement.style.setProperty('--snackbar-duration', `${snackbarDuration}ms`)
+      document.documentElement.style.setProperty('--offset-duration', `${offsetDuration}ms`)
 
       // Initialize WebSocket and set up listeners
       webSocketStore.initializeWebSocket()
@@ -41,8 +53,34 @@ export default defineComponent({
     const holdings = computed(() => holdingsListStore.holdings)
 
     // Watch for changes in holdings
-    watch(holdings, (newHoldings) => {
+    watch(holdings, async (newHoldings, oldHoldings) => {
       console.log('Holdings updated in component:', newHoldings)
+      if (!snackbarStore.showComponent) {
+        const increasedHolding = newHoldings.find((newHolding) => {
+          const oldHolding = oldHoldings.find((old) => old.name === newHolding.name)
+          return (
+            oldHolding && parseFloat(newHolding.amountTotal) > parseFloat(oldHolding.amountTotal)
+          )
+        })
+
+        if (increasedHolding) {
+          snackbarStore.setTitle('Received')
+          snackbarStore.setMessage(`${increasedHolding.name}`)
+          snackbarStore.toggleShow()
+          await new Promise((resolve) => setTimeout(resolve, offsetDuration))
+          snackbarStore.toggleOpacity()
+
+          // Set the highlighted holding here
+          highlightedHolding.value = increasedHolding.name
+
+          await new Promise((resolve) => setTimeout(resolve, snackbarDuration))
+          snackbarStore.toggleOpacity()
+          highlightedHolding.value = null
+
+          await new Promise((resolve) => setTimeout(resolve, fadeDuration))
+          snackbarStore.reset()
+        }
+      }
     })
 
     const sortedHoldings = computed(() => {
@@ -84,7 +122,8 @@ export default defineComponent({
       getIcon,
       showComponent,
       isFaded,
-      handleHoldingClick
+      handleHoldingClick,
+      highlightedHolding
     }
   }
 })
@@ -96,6 +135,7 @@ export default defineComponent({
       v-for="holding in sortedHoldings"
       :key="holding.name"
       class="holdings-list-item clickable"
+      :class="{ highlighted: holding.name === highlightedHolding }"
       @click="handleHoldingClick(holding)"
     >
       <div class="content-container">
@@ -134,6 +174,7 @@ export default defineComponent({
   padding: 0 16px;
   width: 100%;
   height: 72px;
+  transition: background-color var(--fade-duration) ease-in-out;
 }
 
 .content-container {
@@ -188,5 +229,9 @@ export default defineComponent({
   font-weight: 600;
   opacity: 0.6;
   color: white;
+}
+
+.highlighted {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 </style>

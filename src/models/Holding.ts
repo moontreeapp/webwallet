@@ -4,6 +4,7 @@ import type { HoldingType } from './HoldingType'
 export class Holding {
   constructor(params: {
     name: string
+    ticker: string
     satConfirmed: number
     satsUnconfirmed: number
     satsTotal: number
@@ -28,6 +29,7 @@ export class Holding {
     iconColor?: string
   }) {
     this.name = params.name
+    this.ticker = params.ticker
     this.satsConfirmed = params.satConfirmed
     this.satsUnconfirmed = params.satsUnconfirmed
     this.satsTotal = params.satsTotal
@@ -53,6 +55,7 @@ export class Holding {
   }
 
   name: string
+  ticker: string
   satsConfirmed: number
   satsUnconfirmed: number
   satsTotal: number

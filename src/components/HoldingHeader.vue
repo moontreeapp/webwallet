@@ -247,8 +247,8 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 64px;
   position: relative;
+  width: 100%;
 }
 
 .title-container {
@@ -263,9 +263,11 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 
 .subtitle-container {
   position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
+  top: 130%;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  white-space: nowrap;
   transition: opacity var(--fade-duration) ease-in-out;
 }
 
@@ -285,6 +287,7 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
 
 .title.clickable {
   cursor: pointer;
+  margin-bottom: 0px;
 }
 
 .title .title-trailing {
@@ -299,7 +302,7 @@ const isTitleClickable = computed(() => !!holdingFiatValue.value)
   opacity: 0.6;
   color: white;
   margin-bottom: 16px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }

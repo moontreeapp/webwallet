@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Magic",
   "version": "0.0.1",
-  "description": "A Beautiful, Simple, Wallet for Everyone!",
+  "description": "An Evrmore Wallet for Everyone!",
   "permissions": ["storage"],
   "action": {
     "default_popup": "index.html"

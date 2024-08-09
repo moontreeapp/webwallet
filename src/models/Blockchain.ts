@@ -22,6 +22,7 @@ export interface AddressType {
 export class Blockchain {
   constructor(params: {
     name: string
+    fullChainName: string
     ticker: string
     maxSupply: number
     decimalPlaces: number
@@ -30,6 +31,7 @@ export class Blockchain {
     addressTypes: AddressType[]
   }) {
     this.name = params.name
+    this.fullChainName = params.fullChainName
     this.ticker = params.ticker
     this.maxSupply = params.maxSupply
     this.decimalPlaces = params.decimalPlaces
@@ -39,6 +41,7 @@ export class Blockchain {
   }
 
   name: string
+  fullChainName: string
   ticker: string
   maxSupply: number
   decimalPlaces: number
@@ -54,6 +57,7 @@ export class Evrmore extends Blockchain {
   constructor() {
     super({
       name: 'Evrmore',
+      fullChainName: 'evrmore_mainnet',
       ticker: 'EVR',
       maxSupply: 15000000000,
       decimalPlaces: 8,
@@ -93,6 +97,7 @@ export class EvrmoreTestnet extends Blockchain {
   constructor() {
     super({
       name: 'Evrmore Testnet',
+      fullChainName: 'evrmore_testnet',
       ticker: 'EVRT',
       maxSupply: 15000000000,
       decimalPlaces: 8,
@@ -132,6 +137,7 @@ export class Ravencoin extends Blockchain {
   constructor() {
     super({
       name: 'Ravencoin',
+      fullChainName: 'ravencoin_mainnet',
       ticker: 'RVN',
       maxSupply: 21000000000,
       decimalPlaces: 8,
@@ -171,6 +177,7 @@ export class RavencoinTestnet extends Blockchain {
   constructor() {
     super({
       name: 'Ravencoin Testnet',
+      fullChainName: 'ravencoin_testnet',
       ticker: 'RVNT',
       maxSupply: 21000000000,
       decimalPlaces: 8,

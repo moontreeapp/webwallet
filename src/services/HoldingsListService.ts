@@ -119,74 +119,82 @@ export class HoldingsListService {
     }
   }
 
-  processHoldings(holdingsData: HoldingData[]): Holding[] {
+  async processHoldings(holdingsData: HoldingData[]): Promise<Holding[]> {
     console.log('Processing holdings:', holdingsData)
     this.logDataType(holdingsData, 'Holdings data')
 
-    return holdingsData.map((holdingData: HoldingData) => {
-      let blockchain
-      switch (holdingData.chain) {
-        case 'evrmore_mainnet':
-          blockchain = evrmore
-          break
-        case 'evrmore_testnet':
-          blockchain = evrmoreTestnet
-          break
-        case 'ravencoin_mainnet':
-          blockchain = ravencoin
-          break
-        case 'ravencoin_testnet':
-          blockchain = ravencoinTestnet
-          break
-        default:
-          throw new Error(`Unsupported blockchain: ${holdingData.chain}`)
-      }
+    return Promise.all(
+      holdingsData.map(async (holdingData: HoldingData) => {
+        let blockchain
+        switch (holdingData.chain) {
+          case 'evrmore_mainnet':
+            blockchain = evrmore
+            break
+          case 'evrmore_testnet':
+            blockchain = evrmoreTestnet
+            break
+          case 'ravencoin_mainnet':
+            blockchain = ravencoin
+            break
+          case 'ravencoin_testnet':
+            blockchain = ravencoinTestnet
+            break
+          default:
+            throw new Error(`Unsupported blockchain: ${holdingData.chain}`)
+        }
 
-      const holdingType =
-        holdingData.symbol === 'EVR' || holdingData.symbol === 'RVN'
-          ? HoldingType.BLOCKCHAIN
-          : HoldingType.ASSET
-      const name =
-        holdingData.symbol === 'EVR' || holdingData.symbol === 'RVN'
-          ? blockchain.name
-          : holdingData.symbol
-      const canMint = holdingType === HoldingType.BLOCKCHAIN
-      const iconImageUrl =
-        holdingType === HoldingType.BLOCKCHAIN ? getIconImageUrl(blockchain.name) : undefined
-      const iconColor =
-        holdingType === HoldingType.ASSET ? this.getContrastingIconBackgroundColor() : undefined
+        const holdingType =
+          holdingData.symbol === 'EVR' || holdingData.symbol === 'RVN'
+            ? HoldingType.BLOCKCHAIN
+            : HoldingType.ASSET
+        const name =
+          holdingData.symbol === 'EVR' || holdingData.symbol === 'RVN'
+            ? blockchain.name
+            : holdingData.symbol
+        const canMint = holdingType === HoldingType.BLOCKCHAIN
+        const iconImageUrl =
+          holdingType === HoldingType.BLOCKCHAIN ? getIconImageUrl(blockchain.name) : undefined
+        const iconColor =
+          holdingType === HoldingType.ASSET ? this.getContrastingIconBackgroundColor() : undefined
 
-      // Get fiat value from ExchangeFiatValueService
-      const fiatValue = ExchangeFiatValueService.getFiatValue(name)
+        const holding = new Holding({
+          name: name,
+          ticker: holdingData.symbol,
+          satConfirmed: holdingData.satsConfirmed,
+          satsUnconfirmed: holdingData.satsUnconfirmed,
+          satsTotal: holdingData.satsConfirmed + holdingData.satsUnconfirmed,
+          amountConfirmed: '0',
+          amountUnconfirmed: '0',
+          amountTotal: '0',
+          amountTotalRounded: '0',
+          amountPrecedingConfirmed: '0',
+          amountPrecedingUnconfirmed: '0',
+          amountPrecedingTotal: '0',
+          amountTrailingConfirmed: '0',
+          amountTrailingUnconfirmed: '0',
+          amountTrailingTotal: '0',
+          hasAdmin: false, // Hardcoded for now
+          fiatValue: '0',
+          holdingType: holdingType,
+          // pubKey: holdingData.walletPubKey,
+          blockchain: blockchain,
+          canMint: canMint,
+          iconImageUrl: iconImageUrl,
+          iconColor: iconColor
+        })
 
-      const holding = new Holding({
-        name: name,
-        satConfirmed: holdingData.satsConfirmed,
-        satsUnconfirmed: holdingData.satsUnconfirmed,
-        satsTotal: holdingData.satsConfirmed + holdingData.satsUnconfirmed,
-        amountConfirmed: '0',
-        amountUnconfirmed: '0',
-        amountTotal: '0',
-        amountTotalRounded: '0',
-        amountPrecedingConfirmed: '0',
-        amountPrecedingUnconfirmed: '0',
-        amountPrecedingTotal: '0',
-        amountTrailingConfirmed: '0',
-        amountTrailingUnconfirmed: '0',
-        amountTrailingTotal: '0',
-        hasAdmin: false, // Hardcoded for now
-        fiatValue: fiatValue,
-        holdingType: holdingType,
-        // pubKey: holdingData.walletPubKey,
-        blockchain: blockchain,
-        canMint: canMint,
-        iconImageUrl: iconImageUrl,
-        iconColor: iconColor
+        this.setAmountProperties(holding, holdingData, blockchain)
+
+        // Get fiat value from ExchangeFiatValueService
+        const amountTotalNumber = parseFloat(holding.amountTotal)
+        const fiatValue = await ExchangeFiatValueService.getFiatValue(
+          holding.ticker,
+          amountTotalNumber
+        )
+        holding.fiatValue = fiatValue.toString()
+
+        return holding
       })
-
-      this.setAmountProperties(holding, holdingData, blockchain)
-
-      return holding
-    })
+    )
   }
 }
