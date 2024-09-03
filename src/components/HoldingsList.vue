@@ -9,24 +9,13 @@ import {
 import { useHoldingsListStore } from '@/stores/useHoldingsListStore'
 import type { Holding } from '../models/Holding'
 import { MaestroService } from '../services/MaestroService'
-import { useWebSocketStore } from '@/stores/useWebSocketStore'
 import { useSnackbarStore } from '@/stores/useSnackbarStore'
 
 export default defineComponent({
   name: 'HoldingsList',
   setup() {
     const holdingsListStore = useHoldingsListStore()
-    const webSocketStore = useWebSocketStore()
     const snackbarStore = useSnackbarStore()
-
-    const highlightedHolding = ref<string | null>(null)
-
-    const fetchHoldingsIfConnected = () => {
-      // Fetch holdings if connected on initialization
-      if (webSocketStore.connected) {
-        holdingsListStore.fetchHoldings()
-      }
-    }
 
     onMounted(() => {
       // Set the CSS variables
@@ -34,20 +23,11 @@ export default defineComponent({
       document.documentElement.style.setProperty('--fade-duration', `${fadeDuration}ms`)
       document.documentElement.style.setProperty('--snackbar-duration', `${snackbarDuration}ms`)
       document.documentElement.style.setProperty('--offset-duration', `${offsetDuration}ms`)
-
-      // Initialize WebSocket and set up listeners
-      webSocketStore.initializeWebSocket()
-      webSocketStore.on('open', fetchHoldingsIfConnected)
-
-      // Fetch holdings if already connected
-      fetchHoldingsIfConnected()
-
-      holdingsListStore.setupHoldingsListener()
+      holdingsListStore.setupWalletUpdateListener()
     })
 
     onUnmounted(() => {
-      holdingsListStore.removeHoldingsListener()
-      webSocketStore.off('open', fetchHoldingsIfConnected)
+      holdingsListStore.removeWalletUpdateListener()
     })
 
     const holdings = computed(() => holdingsListStore.holdings)
@@ -69,14 +49,8 @@ export default defineComponent({
           snackbarStore.toggleShow()
           await new Promise((resolve) => setTimeout(resolve, offsetDuration))
           snackbarStore.toggleOpacity()
-
-          // Set the highlighted holding here
-          highlightedHolding.value = increasedHolding.name
-
           await new Promise((resolve) => setTimeout(resolve, snackbarDuration))
           snackbarStore.toggleOpacity()
-          highlightedHolding.value = null
-
           await new Promise((resolve) => setTimeout(resolve, fadeDuration))
           snackbarStore.reset()
         }
@@ -122,8 +96,7 @@ export default defineComponent({
       getIcon,
       showComponent,
       isFaded,
-      handleHoldingClick,
-      highlightedHolding
+      handleHoldingClick
     }
   }
 })
@@ -135,7 +108,6 @@ export default defineComponent({
       v-for="holding in sortedHoldings"
       :key="holding.name"
       class="holdings-list-item clickable"
-      :class="{ highlighted: holding.name === highlightedHolding }"
       @click="handleHoldingClick(holding)"
     >
       <div class="content-container">
@@ -229,9 +201,5 @@ export default defineComponent({
   font-weight: 600;
   opacity: 0.6;
   color: white;
-}
-
-.highlighted {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 </style>

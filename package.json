@@ -20,6 +20,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "consolidate": "^1.0.3",
+    "mitt": "^3.0.1",
     "pinia": "^2.1.7",
     "postcss": "^8.4.38",
     "qrcode": "^1.5.3",

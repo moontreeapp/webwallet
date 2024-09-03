@@ -5,6 +5,7 @@ import { HoldingType } from '../models/HoldingType'
 
 const placeholderBlockchain = new Blockchain({
   name: '',
+  fullChainName: '',
   port: 0,
   ticker: '',
   maxSupply: 0,
@@ -15,6 +16,7 @@ const placeholderBlockchain = new Blockchain({
 
 const placeholderHolding = new Holding({
   name: '',
+  ticker: '',
   satConfirmed: 0,
   satsUnconfirmed: 0,
   satsTotal: 0,
@@ -31,7 +33,6 @@ const placeholderHolding = new Holding({
   hasAdmin: false,
   fiatValue: '',
   holdingType: HoldingType.ASSET,
-  pubKey: '',
   blockchain: placeholderBlockchain,
   canMint: false,
   // metadata: HoldingMetadata;,

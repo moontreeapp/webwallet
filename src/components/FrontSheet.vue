@@ -1,34 +1,30 @@
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, onUnmounted, computed } from 'vue'
+import {
+  defineComponent,
+  ref,
+  watch,
+  onMounted,
+  onUnmounted,
+  computed,
+  defineAsyncComponent
+} from 'vue'
 import { useFrontSheetStore, type SheetState } from '@/stores/useFrontSheetStore'
 import { fadeDuration, slideDuration } from '@/utils/animationUtils'
-import Onboarding from '@/components/Onboarding.vue'
-import SignInForm from '@/components/SignInForm.vue'
-import HoldingsList from '@/components/HoldingsList.vue'
-// Lazy load all components
-const HistoryListItem = () => import('@/components/HistoryListItem.vue')
-const SendPreviewForm = () => import('@/components/SendPreviewForm.vue')
-const Receive = () => import('@/components/Receive.vue')
-const TransactionHistory = () => import('./TransactionHistory.vue')
-const QrCodeScanner = () => import('@/components/QrCodeScanner.vue')
-const SendQr = () => import('./SendQr.vue')
-const Swap = () => import('./Swap.vue')
-const Mint = () => import('./Mint.vue')
 
 export default defineComponent({
   name: 'FrontSheet',
   components: {
-    HistoryListItem,
-    Onboarding,
-    SignInForm,
-    SendPreviewForm,
-    Swap,
-    Mint,
-    SendQr,
-    HoldingsList,
-    Receive,
-    TransactionHistory,
-    QrCodeScanner
+    HistoryListItem: defineAsyncComponent(() => import('@/components/HistoryListItem.vue')),
+    Onboarding: defineAsyncComponent(() => import('@/components/Onboarding.vue')),
+    SignInForm: defineAsyncComponent(() => import('@/components/SignInForm.vue')),
+    SendPreviewForm: defineAsyncComponent(() => import('@/components/SendPreviewForm.vue')),
+    Swap: defineAsyncComponent(() => import('@/components/Swap.vue')),
+    Mint: defineAsyncComponent(() => import('@/components/Mint.vue')),
+    SendQr: defineAsyncComponent(() => import('@/components/SendQr.vue')),
+    HoldingsList: defineAsyncComponent(() => import('@/components/HoldingsList.vue')),
+    Receive: defineAsyncComponent(() => import('@/components/Receive.vue')),
+    TransactionHistory: defineAsyncComponent(() => import('@/components/TransactionHistory.vue')),
+    QrCodeScanner: defineAsyncComponent(() => import('@/components/QrCodeScanner.vue'))
   },
   setup() {
     onMounted(() => {

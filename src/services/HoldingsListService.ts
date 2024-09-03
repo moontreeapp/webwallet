@@ -66,23 +66,48 @@ export class HoldingsListService {
 
   private calculateRoundedAmount(amount: number): string {
     const absAmount = Math.abs(amount)
-    let result: string
-    if (absAmount >= 1e9) {
-      result = (amount / 1e9).toFixed(1).replace(/\.0$/, '') + 'B'
-    } else if (absAmount >= 1e6) {
-      result = (amount / 1e6).toFixed(1).replace(/\.0$/, '') + 'M'
-    } else if (absAmount >= 1e3) {
-      result = (amount / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'
-    } else if (absAmount >= 100) {
-      result = Math.round(amount).toString()
-    } else if (absAmount >= 1) {
-      result = amount.toFixed(2).replace(/\.00$/, '')
-    } else if (absAmount > 0) {
-      result = amount.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')
-    } else {
-      result = '0'
+    if (absAmount < 0.01) return '0'
+
+    const magnitudes = [
+      { value: 1e9, suffix: 'B' },
+      { value: 1e6, suffix: 'M' },
+      { value: 1e3, suffix: 'k' },
+      { value: 1, suffix: '' }
+    ]
+
+    for (const { value, suffix } of magnitudes) {
+      if (absAmount >= value * 0.9995) {
+        const scaled = absAmount / value
+        const rounded = Math.round(scaled * 100) / 100
+        let result = rounded.toFixed(2)
+
+        // New logic to handle numbers like 499.99
+        if (value === 1 && absAmount >= 100) {
+          result = Math.round(rounded).toString()
+        } else {
+          result = result.replace(/\.00$/, '')
+        }
+
+        return (amount < 0 ? '-' : '') + result + suffix
+      }
     }
-    return result
+
+    // For numbers between 0.01 and 1000
+    if (absAmount < 1000) {
+      if (absAmount >= 100) {
+        // For numbers 100-999, round to whole number
+        return (amount < 0 ? '-' : '') + Math.round(absAmount).toString()
+      } else if (absAmount >= 10) {
+        // For numbers 10-99.99, round to 1 decimal place
+        return (amount < 0 ? '-' : '') + absAmount.toFixed(1).replace(/\.0$/, '')
+      } else {
+        // For numbers 0.01-9.99, round to 2 decimal places
+        return (amount < 0 ? '-' : '') + absAmount.toFixed(2).replace(/\.00$/, '')
+      }
+    }
+
+    // This shouldn't be reached, but just in case
+    return (amount < 0 ? '-' : '') + absAmount.toFixed(2)
   }
 
   private setAmountProperties(holding: Holding, holdingData: any, blockchain: any): void {
@@ -99,6 +124,7 @@ export class HoldingsListService {
     holding.amountUnconfirmed = unconfirmed.full
     holding.amountTotal = total.full
     holding.amountTotalRounded = this.calculateRoundedAmount(parseFloat(total.full))
+    console.log('amountTotalRounded:', holding.amountTotalRounded)
 
     holding.amountPrecedingConfirmed = confirmed.preceding
     holding.amountPrecedingUnconfirmed = unconfirmed.preceding
@@ -126,7 +152,8 @@ export class HoldingsListService {
     return Promise.all(
       holdingsData.map(async (holdingData: HoldingData) => {
         let blockchain
-        switch (holdingData.chain) {
+        // handle both chain and chainName for manual fetch and websocket subscriptions
+        switch (holdingData.chain || holdingData.chainName) {
           case 'evrmore_mainnet':
             blockchain = evrmore
             break

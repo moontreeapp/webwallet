@@ -8,6 +8,7 @@ export class HoldingData {
   @Expose() @Type(() => Number) satsUnconfirmed: number = 0
   @Expose() symbol: string = ''
   @Expose() chain: string = ''
+  @Expose() chainName: string = ''
 
   constructor(data?: Partial<HoldingData>) {
     if (data) {
